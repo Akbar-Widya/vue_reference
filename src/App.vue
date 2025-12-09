@@ -1,39 +1,29 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 
-const titleClass = ref('title')
-let id = 0
-const ProductClothes = ref([
-  {id: id++, name: "shirt", price: 10},
-  {id: id++, name: "blouse", price: 13},
-  {id: id++, name: "gown", price: 16},
-  {id: id++, name: "jeans", price: 15},
-])
-
-const expensiveItems = computed(() => {
-  return ProductClothes.value.filter((product) => product.price >= 15)
+const todoItem = ref({
+  id: 1, todo: "sweeping the floor", done: false
 })
 
-if (expensiveItems.value.length > 0) {
-  // If there are expensive items, set the class to gold
-  titleClass.value = 'title-gold'
-} 
 </script>
 
 <template>
-  <h1 :class="titleClass">Product List</h1>
-  <ul>
-    <li v-for="product in ProductClothes" :key="product.id">
-      {{product.name + ': $' + product.price}}
-    </li>
-  </ul>
+  <div :style="{ backgroundColor: 'lightblue', display: 'flex', gap: '8px' }">
+    <input type="checkbox" v-model="todoItem.done" :id="'todo-' + todoItem.id" />
+    
+    <label :for="'todo-' + todoItem.id">
+      <h1 :class="{ doneStyle: todoItem.done }">
+        {{ todoItem.todo }}
+      </h1>
+    </label>
+  </div>
+  <p>Status: {{ todoItem.done ? 'DONE' : 'PENDING' }}</p>
 </template>
 
-<style>
-.title {
-  color: purple;
-}
-.title-gold {
-  color: gold;
+<style scoped>
+/* Optional: Style to visually indicate the 'done' state */
+.doneStyle {
+  text-decoration: line-through;
+  color: #888;
 }
 </style>
