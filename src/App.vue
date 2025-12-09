@@ -1,51 +1,39 @@
 <script setup>
 import { ref, computed } from 'vue'
 
+const titleClass = ref('title')
 let id = 0
-
-const newTodo = ref('')
-const hideCompleted = ref(false)
-const todos = ref([
-  { id: id++, text: 'Learn HTML', done: true },
-  { id: id++, text: 'Learn JavaScript', done: true },
-  { id: id++, text: 'Learn Vue', done: false }
+const ProductClothes = ref([
+  {id: id++, name: "shirt", price: 10},
+  {id: id++, name: "blouse", price: 13},
+  {id: id++, name: "gown", price: 16},
+  {id: id++, name: "jeans", price: 15},
 ])
 
-const filteredTodos = computed(() => {
-  return hideCompleted.value
-    ? todos.value.filter((t) => !t.done)
-    : todos.value
+const expensiveItems = computed(() => {
+  return ProductClothes.value.filter((product) => product.price >= 15)
 })
 
-function addTodo() {
-  todos.value.push({ id: id++, text: newTodo.value, done: false })
-  newTodo.value = ''
-}
-
-function removeTodo(todo) {
-  todos.value = todos.value.filter((t) => t !== todo)
-}
+if (expensiveItems.value.length > 0) {
+  // If there are expensive items, set the class to gold
+  titleClass.value = 'title-gold'
+} 
 </script>
 
 <template>
-  <form @submit.prevent="addTodo">
-    <input v-model="newTodo" required placeholder="new todo">
-    <button>Add Todo</button>
-  </form>
+  <h1 :class="titleClass">Product List</h1>
   <ul>
-    <li v-for="todo in filteredTodos" :key="todo.id">
-      <input type="checkbox" v-model="todo.done">
-      <span :class="{ done: todo.done }">{{ todo.text }}</span>
-      <button @click="removeTodo(todo)">X</button>
+    <li v-for="product in ProductClothes" :key="product.id">
+      {{product.name + ': $' + product.price}}
     </li>
   </ul>
-  <button @click="hideCompleted = !hideCompleted">
-    {{ hideCompleted ? 'Show all' : 'Hide completed' }}
-  </button>
 </template>
 
 <style>
-.done {
-  text-decoration: line-through;
+.title {
+  color: purple;
+}
+.title-gold {
+  color: gold;
 }
 </style>
