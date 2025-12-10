@@ -1,29 +1,24 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
-const todoItem = ref({
-  id: 1, todo: "sweeping the floor", done: false
-})
+const todoId = ref(1)
+const todoData = ref(null)
 
+async function fetchData() {
+   todoData.value = null
+   const res = await fetch(
+      `https://jsonplaceholder.typicode.com/todos/${todoId.value}`
+   )
+   todoData.value = await res.json()
+}
+
+fetchData()
+watch(todoId, fetchData)
 </script>
 
 <template>
-  <div :style="{ backgroundColor: 'lightblue', display: 'flex', gap: '8px' }">
-    <input type="checkbox" v-model="todoItem.done" :id="'todo-' + todoItem.id" />
-    
-    <label :for="'todo-' + todoItem.id">
-      <h1 :class="{ doneStyle: todoItem.done }">
-        {{ todoItem.todo }}
-      </h1>
-    </label>
-  </div>
-  <p>Status: {{ todoItem.done ? 'DONE' : 'PENDING' }}</p>
+   <p>Todo id: {{ todoId }}</p>
+   <button @click="todoId++" :disabled="!todoData">Fetch next todo</button>
+   <p v-if="!todoData">Loading...</p>
+   <pre v-else>{{ todoData }}</pre>
 </template>
-
-<style scoped>
-/* Optional: Style to visually indicate the 'done' state */
-.doneStyle {
-  text-decoration: line-through;
-  color: #888;
-}
-</style>
